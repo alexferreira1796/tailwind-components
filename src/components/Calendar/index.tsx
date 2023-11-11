@@ -6,6 +6,7 @@ import { Modal } from '@/components/Modal'
 import { Loading } from '@/components/common/Loading'
 
 import { capitalizeFirstLetter } from '@/utils/capitalizeFirsttLetter'
+import { isValidDate } from '@/utils/isValidDate'
 
 import { useCalendarController } from './calendarController'
 import { daysOfWeek } from './mock'
@@ -24,7 +25,23 @@ export const Calendar = () => {
     openModal,
     closeModal,
     formatDate,
+    daysOfPreviousMonth,
   } = useCalendarController()
+
+  const emptyDays = daysOfPreviousMonth?.map((day, index) => (
+    <div
+      key={`empty-${index}`}
+      className="text-center p-2 bg-gray-100"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <span className="text-gray-300 font-bold">{formatDate(day)}</span>
+    </div>
+  ))
 
   return (
     <>
@@ -53,35 +70,48 @@ export const Calendar = () => {
         </select>
         <div className="overflow-x-auto">
           <div className="w-full min-w-screen-md grid grid-cols-7">
-            {daysOfWeek.map((day: string) => (
+            {daysOfWeek?.map((day: string) => (
               <div key={day} className="text-center p-2 bg-gray-200 font-bold">
-                {day}
+                {capitalizeFirstLetter(day)}
               </div>
             ))}
             {!loading &&
-              daysOfMonth.map((dayOfMonth: Date) => {
-                const valueOfDay = valuesInReais[formatDate(dayOfMonth)]
-                return (
-                  <div
-                    key={dayOfMonth.toString()}
-                    onClick={() => openModal(valueOfDay)}
-                    className={`${
-                      valueOfDay !== undefined && 'cursor-pointer'
-                    } text-center p-2 ${
-                      valueOfDay !== undefined && isMobile
-                        ? 'bg-blue-500 text-white font-bold shadow-lg'
-                        : 'shadow-md'
-                    }`}
-                  >
-                    {formatDate(dayOfMonth)}
-                    {!isMobile && valueOfDay !== undefined && (
-                      <div className="mt-2 bg-blue-500 text-white cursor-pointer">
-                        R$ {valueOfDay.toFixed(2)}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+              [...emptyDays, ...daysOfMonth]?.map(
+                (dayOfMonth: Date | unknown, index: number) => {
+                  if (!isValidDate(dayOfMonth)) {
+                    return emptyDays[index]
+                  }
+
+                  const valueOfDay = valuesInReais[formatDate(dayOfMonth)]
+                  const cellClasses = `text-center p-2 ${
+                    valueOfDay !== undefined
+                      ? isMobile
+                        ? 'bg-blue-500 text-white font-bold shadow-lg cursor-pointer'
+                        : 'shadow-md cursor-pointer'
+                      : 'shadow-md'
+                  }`
+                  return (
+                    <div
+                      key={dayOfMonth.toString()}
+                      onClick={() => openModal(valueOfDay)}
+                      className={cellClasses}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {formatDate(dayOfMonth)}
+                      {!isMobile && valueOfDay !== undefined && (
+                        <div className="mt-2 bg-blue-500 text-white cursor-pointer">
+                          R$ {valueOfDay.toFixed(2)}
+                        </div>
+                      )}
+                    </div>
+                  )
+                },
+              )}
           </div>
           {loading && <Loading />}
         </div>

@@ -47,6 +47,18 @@ export const useCalendarController = () => {
 
   const formatDate = (date: Date) => format(date, 'd')
 
+  const firstDayOfMonth = new Date(daysOfMonth[0])
+  const startingDay = firstDayOfMonth.getDay()
+
+  const daysOfPreviousMonth = []
+  const daysInPreviousMonth = startingDay === 0 ? 6 : startingDay - 1
+
+  for (let i = 0; i < daysInPreviousMonth; i++) {
+    const day = new Date(firstDayOfMonth)
+    day.setDate(day.getDate() - (daysInPreviousMonth - i))
+    daysOfPreviousMonth.push(day)
+  }
+
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchData()
@@ -66,6 +78,9 @@ export const useCalendarController = () => {
     openModal,
     closeModal,
     formatDate,
+    firstDayOfMonth,
+    startingDay,
+    daysOfPreviousMonth,
   }
 }
 

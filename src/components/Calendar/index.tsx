@@ -89,7 +89,7 @@ export const Calendar = () => {
                         ? 'bg-blue-500 text-white font-bold shadow-lg cursor-pointer'
                         : 'shadow-md cursor-pointer'
                       : 'shadow-md'
-                  }`
+                  } h-20`
                   return (
                     <div
                       key={dayOfMonth.toString()}

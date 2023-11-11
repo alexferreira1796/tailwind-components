@@ -3,6 +3,7 @@ import { isMobile } from 'react-device-detect'
 import { ptBR } from 'date-fns/locale'
 
 import { Modal } from '@/components/Modal'
+import { Loading } from '@/components/common/Loading'
 
 import { capitalizeFirstLetter } from '@/utils/capitalizeFirsttLetter'
 
@@ -82,7 +83,7 @@ export const Calendar = () => {
                 )
               })}
           </div>
-          {loading && <div className="c-loader"></div>}
+          {loading && <Loading />}
         </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal} id={itemSelected!} />

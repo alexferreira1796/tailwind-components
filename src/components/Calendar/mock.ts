@@ -1,6 +1,14 @@
-import { ValuesInReais } from "./types";
+import { ValuesInReais } from './types'
 
-export const daysOfWeek: string[] = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+export const daysOfWeek: string[] = [
+  'Dom',
+  'Seg',
+  'Ter',
+  'Qua',
+  'Qui',
+  'Sex',
+  'Sáb',
+]
 
 export const valuesPerMonth: Record<string, ValuesInReais> = {
   '01': { '2': 50.0, '17': 30.0, '20': 100.0 },
@@ -15,4 +23,4 @@ export const valuesPerMonth: Record<string, ValuesInReais> = {
   '10': { '8': 80.0, '16': 40.0, '09': 120.0 },
   '11': { '14': 80.0, '22': 40.0, '10': 120.0 },
   '12': { '15': 80.0, '23': 40.0, '30': 120.0 },
-};
+}

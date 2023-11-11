@@ -1,3 +1,3 @@
 export interface ValuesInReais {
-    [key: string]: number;
+  [key: string]: number
 }

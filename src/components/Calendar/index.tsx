@@ -8,7 +8,7 @@ import { Loading } from '@/components/common/Loading'
 import { capitalizeFirstLetter } from '@/utils/capitalizeFirsttLetter'
 import { isValidDate } from '@/utils/isValidDate'
 
-import { useCalendarController } from './calendarController'
+import { useCalendarController } from './controller'
 import { daysOfWeek } from './mock'
 
 import './styles.css'

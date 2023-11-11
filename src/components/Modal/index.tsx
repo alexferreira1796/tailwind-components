@@ -1,7 +1,7 @@
 import { type FC } from 'react'
 
 import { ModalTypes } from './types'
-import { useModalController } from './modalController'
+import { useModalController } from './controller'
 
 export const Modal: FC<ModalTypes> = ({ isOpen, onClose, id }) => {
   const { item } = useModalController({ id })

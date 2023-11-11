@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ModalControllerProps } from './types'
+import { ModalControllerProps } from '../types'
 
 export const useModalController = ({ id }: ModalControllerProps) => {
   const [item, setItem] = useState<string | null>(null)

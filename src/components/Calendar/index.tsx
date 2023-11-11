@@ -1,57 +1,30 @@
-import { useState, useEffect } from 'react';
 import {
-  startOfMonth,
-  endOfMonth,
-  eachDayOfInterval,
   format,
 } from 'date-fns';
 import { isMobile } from 'react-device-detect';
 import { ptBR } from 'date-fns/locale';
 
+import { Modal } from "@/components/Modal";
+
+import { capitalizeFirstLetter } from '@/utils/capitalizeFirsttLetter';
+
+import { useCalendarController } from './calendarController';
+import { daysOfWeek } from './mock';
+
 import './styles.css';
 
-interface ValuesInReais {
-  [key: string]: number;
-}
-
 export const Calendar = () => {
-  const [selectedMonth, setSelectedMonth] = useState(new Date());
-  const [valuesInReais, setValuesInReais] = useState<ValuesInReais>({});
-
-  const getValuesForMonth = (month: Date): ValuesInReais => {
-    const monthString = format(month, 'MM');
-    return valuesPerMonth[monthString] || {};
-  };
-
-  useEffect(() => {
-    const newValues: ValuesInReais = getValuesForMonth(selectedMonth);
-    setValuesInReais(newValues);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMonth]);
-
-  const daysOfWeek: string[] = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-  const daysOfMonth: Date[] = eachDayOfInterval({
-    start: startOfMonth(selectedMonth),
-    end: endOfMonth(selectedMonth),
-  });
-
-  const formatDate = (date: Date) => format(date, 'd');
-
-  const valuesPerMonth: Record<string, ValuesInReais> = {
-    '01': { '2': 50.0, '17': 30.0, '20': 100.0 },
-    '02': { '5': 80.0, '10': 40.0, '25': 120.0 },
-    '03': { '1': 80.0, '11': 40.0, '19': 120.0 },
-    '04': { '2': 80.0, '23': 40.0, '30': 120.0 },
-    '05': { '5': 80.0, '20': 40.0, '12': 120.0 },
-    '06': { '7': 80.0, '25': 40.0, '14': 120.0 },
-    '07': { '10': 80.0, '22': 40.0, '04': 120.0 },
-    '08': { '5': 80.0, '12': 40.0, '13': 120.0 },
-    '09': { '12': 80.0, '15': 40.0, '06': 120.0 },
-    '10': { '8': 80.0, '16': 40.0, '09': 120.0 },
-    '11': { '14': 80.0, '22': 40.0, '10': 120.0 },
-    '12': { '15': 80.0, '23': 40.0, '30': 120.0 },
-  };
+  const { 
+    selectedMonth, 
+    setSelectedMonth,
+    valuesInReais,
+    loading,
+    isModalOpen,
+    itemSelected,
+    daysOfMonth,
+    openModal,
+    closeModal,
+    formatDate } = useCalendarController();
 
   return (
     <>
@@ -68,7 +41,7 @@ export const Calendar = () => {
         >
           {[...Array(12)].map((_, index) => (
             <option key={index + 1} value={String(index + 1).padStart(2, '0')}>
-              {format(new Date(selectedMonth.getFullYear(), index, 1), 'MMMM', { locale: ptBR }).toLocaleUpperCase()}
+              {capitalizeFirstLetter( format(new Date(selectedMonth.getFullYear(), index, 1), 'MMMM', { locale: ptBR }) )}
             </option>
           ))}
         </select>
@@ -79,27 +52,32 @@ export const Calendar = () => {
                 {day}
               </div>
             ))}
-            {daysOfMonth.map((dayOfMonth: Date, idx: number) => {
+            {!loading && daysOfMonth.map((dayOfMonth: Date, idx: number) => {
               const valueOfDay = valuesInReais[formatDate(dayOfMonth)];
               return (
                 <div
                   key={dayOfMonth.toString()}
-                  className={`text-center p-2 ${
+                  onClick={() => openModal(valueOfDay)}
+                  className={`${valueOfDay !== undefined && 'cursor-pointer'} text-center p-2 ${
                     valueOfDay !== undefined && isMobile ? 'bg-blue-500 text-white font-bold shadow-lg' : 'shadow-md'
                   }`}
                 >
                   {formatDate(dayOfMonth)}
                   {!isMobile && valueOfDay !== undefined && (
-                    <div className="mt-2 bg-blue-500 text-white">
-                      R${valueOfDay.toFixed(2)}
+                    <div className="mt-2 bg-blue-500 text-white cursor-pointer">
+                      R$ {valueOfDay.toFixed(2)}
                     </div>
                   )}
                 </div>
               );
             })}
           </div>
+          {
+            loading && <div className="c-loader"></div>
+          }
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={closeModal} id={itemSelected!} />
     </>
   );
 };

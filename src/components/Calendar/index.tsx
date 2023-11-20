@@ -45,7 +45,7 @@ export const Calendar = () => {
 
   return (
     <>
-      <p className="m-2 p-2 font-bold">Calendar</p>
+      <p className="m-2 p-2 font-bold">Calendário</p>
       <div className="flex flex-col shadow">
         <select
           className="m-2 p-2 shadow-md"
